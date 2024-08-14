@@ -9,10 +9,15 @@ import (
 type (
 	Config struct {
 		HTTP `yaml:"http"`
+		Log  `yaml:"logger"`
 	}
 
 	HTTP struct {
 		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+	}
+
+	Log struct {
+		Level string `env-required:"true" yaml:"level" env:"LOG_LEVEL"`
 	}
 )
 

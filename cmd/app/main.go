@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/VmesteApp/auth-service/config"
+	"github.com/VmesteApp/auth-service/internal/app"
 )
 
 func main() {
@@ -14,5 +14,5 @@ func main() {
 		log.Fatalf("can't init config: %s", err)
 	}
 
-	fmt.Println(cfg)
+	app.Run(cfg)
 }
