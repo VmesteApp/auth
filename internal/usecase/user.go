@@ -1,5 +1,7 @@
 package usecase
 
+import "context"
+
 type UserUseCase struct {
 	repo UserRepo
 }
@@ -10,3 +12,14 @@ func New(repo UserRepo) *UserUseCase {
 		repo: repo,
 	}
 }
+
+// CreateAccount implements User.
+func (u *UserUseCase) CreateAccount(ctx context.Context) {
+	panic("unimplemented")
+}
+
+// Login implements User.
+func (u *UserUseCase) Login(ctx context.Context) {
+	panic("unimplemented")
+}
+
