@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/VmesteApp/auth-service/config"
+	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/logger"
 	"github.com/VmesteApp/auth-service/pkg/postgres"
 )
@@ -18,4 +19,8 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 	l.Info("connected to database")
+
+	userUseCase := usecase.New(pg)
+
+	_ = userUseCase
 }
