@@ -21,5 +21,17 @@ compose-down: ### Down docker-compose
 .PHONY: compose-down
 
 run-app: ### Run app (after `make compose-up`)
-	go run cmd/app/main.go
+	go run -tags migrate ./cmd/app
 .PHONY: run-app
+
+migrate-create:  ### create new migration
+	./bin/migrate create -ext sql -dir migrations $(name)
+.PHONY: migrate-create
+
+migrate-up: ### migration up
+	./bin/migrate -path migrations -database '$(PG_URL)?sslmode=disable' up
+.PHONY: migrate-up
+
+bin-deps:
+	GOBIN=$(LOCAL_BIN) go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	GOBIN=$(LOCAL_BIN) go install github.com/golang/mock/mockgen@latest
