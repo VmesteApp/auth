@@ -10,6 +10,7 @@ type (
 	Config struct {
 		HTTP `yaml:"http"`
 		Log  `yaml:"logger"`
+		PG   `yaml:"postgres"`
 	}
 
 	HTTP struct {
@@ -18,6 +19,11 @@ type (
 
 	Log struct {
 		Level string `env-required:"true" yaml:"level" env:"LOG_LEVEL"`
+	}
+
+	PG struct {
+		PoolMax int    `env-required:"true" yaml:"pool_max" env:"PG_POOL_MAX"`
+		URL     string `env-required:"true" yaml:"pg_url" env:"PG_URL"`
 	}
 )
 
