@@ -40,6 +40,10 @@ linter-fix: ### fix by golangci linter
 	./bin/golangci-lint run --fix
 .PHONY: linter-golangci
 
+docker-rm-volume: ### remove docker volume
+	docker volume rm auth-service_pg-data
+.PHONY: docker-rm-volume
+
 bin-deps: ### install deps
 	GOBIN=$(LOCAL_BIN) go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	GOBIN=$(LOCAL_BIN) go install github.com/golang/mock/mockgen@latest
