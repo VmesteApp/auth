@@ -32,6 +32,16 @@ migrate-up: ### migration up
 	./bin/migrate -path migrations -database '$(PG_URL)?sslmode=disable' up
 .PHONY: migrate-up
 
-bin-deps:
+linter-check: ### check by golangci linter
+	./bin/golangci-lint run
+.PHONY: linter-golangci
+
+linter-fix: ### fix by golangci linter
+	./bin/golangci-lint run --fix
+.PHONY: linter-golangci
+
+bin-deps: ### install deps
 	GOBIN=$(LOCAL_BIN) go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	GOBIN=$(LOCAL_BIN) go install github.com/golang/mock/mockgen@latest
+	GOBIN=$(LOCAL_BIN) go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+.PHONY: bin-deps

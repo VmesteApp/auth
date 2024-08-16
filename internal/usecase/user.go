@@ -22,4 +22,3 @@ func (u *UserUseCase) CreateAccount(ctx context.Context) {
 func (u *UserUseCase) Login(ctx context.Context) {
 	panic("unimplemented")
 }
-

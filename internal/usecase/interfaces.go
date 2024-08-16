@@ -3,7 +3,7 @@ package usecase
 import "context"
 
 type (
-	User interface{
+	User interface {
 		CreateAccount(ctx context.Context)
 		Login(ctx context.Context)
 	}

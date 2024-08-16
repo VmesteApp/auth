@@ -6,13 +6,14 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/VmesteApp/auth-service/config"
 	v1 "github.com/VmesteApp/auth-service/internal/controller/http/v1"
 	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/httpserver"
 	"github.com/VmesteApp/auth-service/pkg/logger"
 	"github.com/VmesteApp/auth-service/pkg/postgres"
-	"github.com/gin-gonic/gin"
 )
 
 func Run(cfg *config.Config) {
