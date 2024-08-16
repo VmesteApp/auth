@@ -44,6 +44,10 @@ docker-rm-volume: ### remove docker volume
 	docker volume rm auth-service_pg-data
 .PHONY: docker-rm-volume
 
+mock: ### run mockgen
+	mockgen -source ./internal/usecase/interfaces.go -package usecase_test > ./internal/usecase/mocks_test.go
+.PHONY: mock
+
 bin-deps: ### install deps
 	GOBIN=$(LOCAL_BIN) go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	GOBIN=$(LOCAL_BIN) go install github.com/golang/mock/mockgen@latest
