@@ -11,6 +11,7 @@ type (
 		HTTP `yaml:"http"`
 		Log  `yaml:"logger"`
 		PG   `yaml:"postgres"`
+		VkAPI `yaml:"vk_api"`
 	}
 
 	HTTP struct {
@@ -24,6 +25,12 @@ type (
 	PG struct {
 		PoolMax int    `env-required:"true" yaml:"pool_max" env:"PG_POOL_MAX"`
 		URL     string `env-required:"true" yaml:"pg_url" env:"PG_URL"`
+	}
+
+	VkAPI struct {
+		AppId int `env-required:"true" yaml:"app_id" env:"VK_APP_ID"`
+		PrivateKey string `env-required:"true" env:"VK_PRIVATE_KEY"`
+		ServiceKey string `env-required:"true" env:"VK_SERVICE_KEY"`
 	}
 )
 
