@@ -8,9 +8,9 @@ import (
 
 type (
 	Config struct {
-		HTTP `yaml:"http"`
-		Log  `yaml:"logger"`
-		PG   `yaml:"postgres"`
+		HTTP  `yaml:"http"`
+		Log   `yaml:"logger"`
+		PG    `yaml:"postgres"`
 		VkAPI `yaml:"vk_api"`
 	}
 
@@ -28,7 +28,7 @@ type (
 	}
 
 	VkAPI struct {
-		AppId int `env-required:"true" yaml:"app_id" env:"VK_APP_ID"`
+		AppId      int    `env-required:"true" yaml:"app_id" env:"VK_APP_ID"`
 		PrivateKey string `env-required:"true" env:"VK_PRIVATE_KEY"`
 		ServiceKey string `env-required:"true" env:"VK_SERVICE_KEY"`
 	}
