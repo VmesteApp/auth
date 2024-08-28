@@ -2,6 +2,11 @@ package usecase
 
 import (
 	"context"
+	"errors"
+	"fmt"
+
+	"github.com/VmesteApp/auth-service/internal/entity"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUseCase struct {
@@ -18,8 +23,22 @@ func New(repo UserRepo, webapi VkWebApi) *UserUseCase {
 }
 
 // CreateAccount implements User.
-func (u *UserUseCase) CreateAccount(ctx context.Context) {
-	panic("unimplemented")
+func (u *UserUseCase) CreateAccount(ctx context.Context, email, password string) error {
+	passHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return fmt.Errorf("can't generate password hash: %w", err)
+	}
+
+	err = u.repo.SaveUser(ctx, email, passHash)
+	if err != nil {
+		if errors.Is(err, entity.ErrUserExists) {
+			return err
+		}
+
+		return fmt.Errorf("can't save user: %w", err)
+	}
+
+	return nil
 }
 
 // Login implements User.

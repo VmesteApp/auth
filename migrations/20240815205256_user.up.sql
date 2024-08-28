@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users(
     id serial PRIMARY KEY,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    passHash VARCHAR(255) NOT NULL
+    email VARCHAR(255) NULL UNIQUE,
+    pass_hash VARCHAR(255) NULL
 );

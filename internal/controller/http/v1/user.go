@@ -12,7 +12,7 @@ import (
 )
 
 type VkAuthRequestBody struct {
-	VkAccessToken string `json:"vkAccessToken"`
+	VkAccessToken string `json:"vkAccessToken" binding:"required"`
 }
 
 type userRoutes struct {
@@ -23,17 +23,49 @@ type userRoutes struct {
 func newUserRoutes(handler *gin.RouterGroup, u usecase.User, l logger.Interface) {
 	r := &userRoutes{u, l}
 
-	handler.POST("/login/vk", r.loginByVk)
+	handler.POST("/register", r.doRegisterNewUser)
+	handler.POST("/login", r.doLoginByVk)
+	handler.POST("/login/vk", r.doLoginByVk)
+}
+
+type doRegisterNewUserRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+func (r *userRoutes) doRegisterNewUser(ctx *gin.Context) {
+	var request doRegisterNewUserRequest
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		r.l.Error(err, "http - v1 - doRegisterNewUser")
+		errorResponse(ctx, http.StatusBadRequest, "invalid request body")
+
+		return
+	}
+
+	err := r.u.CreateAccount(ctx.Request.Context(), request.Email, request.Password)
+	if errors.Is(err, entity.ErrUserExists) {
+		errorResponse(ctx, http.StatusConflict, "user already exists")
+
+		return
+	}
+	if err != nil {
+		r.l.Error(err, "http - v1 - doRegisterNewUser")
+		errorResponse(ctx, http.StatusInternalServerError, "auth service problems")
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, nil)
 }
 
 type doLoginByVkRequest struct {
 	VkAccessToken string `json:"vkAccessToken" binding:"required"`
 }
 
-func (r *userRoutes) loginByVk(ctx *gin.Context) {
+func (r *userRoutes) doLoginByVk(ctx *gin.Context) {
 	var request doLoginByVkRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		r.l.Error(err, "http - v1 - doTranslate")
+		r.l.Error(err, "http - v1 - doLoginByVk")
 		errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 
 		return

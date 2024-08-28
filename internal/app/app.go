@@ -11,6 +11,7 @@ import (
 	"github.com/VmesteApp/auth-service/config"
 	v1 "github.com/VmesteApp/auth-service/internal/controller/http/v1"
 	"github.com/VmesteApp/auth-service/internal/usecase"
+	"github.com/VmesteApp/auth-service/internal/usecase/repo"
 	"github.com/VmesteApp/auth-service/internal/usecase/webapi"
 	"github.com/VmesteApp/auth-service/pkg/httpserver"
 	"github.com/VmesteApp/auth-service/pkg/logger"
@@ -28,9 +29,7 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 	l.Info("connected to database")
 
-	vkWebApi := webapi.New(cfg.AppId, cfg.ServiceKey)
-
-	userUseCase := usecase.New(pg, vkWebApi)
+	userUseCase := usecase.New(repo.NewUserRepository(pg), webapi.New(cfg.AppId, cfg.ServiceKey))
 
 	handler := gin.New()
 	v1.NewRouter(handler, l, userUseCase)
