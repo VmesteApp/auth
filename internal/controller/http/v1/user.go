@@ -1,10 +1,12 @@
 package v1
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/logger"
 )
@@ -38,7 +40,14 @@ func (r *userRoutes) loginByVk(ctx *gin.Context) {
 	}
 
 	token, err := r.u.VkLogin(ctx.Request.Context(), request.VkAccessToken)
-	// TODO: add handling of custom BadToken
+	if errors.Is(err, entity.ErrBadVkToken) {
+		errorResponse(ctx, http.StatusBadRequest, "wrong access_token")
+		return
+	}
+	if errors.Is(err, entity.ErrVkTokenExpired) {
+		errorResponse(ctx, http.StatusUnauthorized, "access_token is expired")
+		return
+	}
 	if err != nil {
 		r.l.Error(err, "http - v1 - loginByVk")
 		errorResponse(ctx, http.StatusInternalServerError, "auth service problems")

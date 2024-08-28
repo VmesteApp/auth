@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 )
 
 type UserUseCase struct {
@@ -31,15 +30,10 @@ func (u *UserUseCase) Login(ctx context.Context) {
 func (u *UserUseCase) VkLogin(ctx context.Context, userAccessToken string) (string, error) {
 	tokenInfo, err := u.api.ValidateUserAccessToken(userAccessToken)
 	if err != nil {
-		return "", fmt.Errorf("can't validate user access_token: %w", err)
+		return "", err
 	}
 
-	fmt.Println(tokenInfo)
-	if tokenInfo.Success == 1 {
-		// TODO: add jwt token generation and user registration
-		return "jwt token", nil
-	}
+	_ = tokenInfo.UserId
 
-	// TODO: add custom error
-	return "", fmt.Errorf("wrong token")
+	return "jwt token", nil
 }
