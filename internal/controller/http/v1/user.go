@@ -4,11 +4,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-
 	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/logger"
+	"github.com/gin-gonic/gin"
 )
 
 type VkAuthRequestBody struct {
@@ -24,7 +23,7 @@ func newUserRoutes(handler *gin.RouterGroup, u usecase.User, l logger.Interface)
 	r := &userRoutes{u, l}
 
 	handler.POST("/register", r.doRegisterNewUser)
-	handler.POST("/login", r.doLoginByVk)
+	handler.POST("/login", r.doLoginByEmail)
 	handler.POST("/login/vk", r.doLoginByVk)
 }
 
@@ -56,6 +55,43 @@ func (r *userRoutes) doRegisterNewUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, nil)
+}
+
+type doLoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+func (r *userRoutes) doLoginByEmail(ctx *gin.Context) {
+	var request doLoginRequest
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		r.l.Error(err, "http - v1 - doLoginByEmail")
+		errorResponse(ctx, http.StatusBadRequest, "invalid request body")
+
+		return
+	}
+
+	token, err := r.u.Login(ctx.Request.Context(), request.Email, request.Password)
+	if errors.Is(err, entity.ErrUserNotFound) {
+		errorResponse(ctx, http.StatusConflict, "user not found")
+
+		return
+	}
+	if errors.Is(err, entity.ErrInvalidCredentials) {
+		errorResponse(ctx, http.StatusUnauthorized, "wrong credentials")
+
+		return
+	}
+	if err != nil {
+		r.l.Error(err, "http - v1 - doLoginByEmail")
+		errorResponse(ctx, http.StatusInternalServerError, "auth service problems")
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]string{
+		"token": token,
+	})
 }
 
 type doLoginByVkRequest struct {

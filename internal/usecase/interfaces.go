@@ -9,7 +9,7 @@ import (
 type (
 	User interface {
 		CreateAccount(ctx context.Context, email, password string) error
-		Login(ctx context.Context)
+		Login(ctx context.Context, email, password string) (string, error)
 		VkLogin(ctx context.Context, userAccessToken string) (string, error)
 	}
 	UserRepo interface {

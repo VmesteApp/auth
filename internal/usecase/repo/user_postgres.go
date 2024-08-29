@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Masterminds/squirrel"
+	"github.com/jackc/pgconn"
+
 	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/pkg/postgres"
-	"github.com/jackc/pgconn"
 )
 
 type UserRepository struct {
@@ -40,5 +42,29 @@ func (u *UserRepository) SaveUser(ctx context.Context, email string, passHash []
 }
 
 func (u *UserRepository) User(ctx context.Context, email string) (*entity.User, error) {
-	return nil, nil
+	sql, args, err := u.Builder.
+		Select("id", "email", "pass_hash", "role").
+		From("users").
+		Where(squirrel.Eq{"email": email}).
+		ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("can't to find user by email: %w", err)
+	}
+
+	rows, err := u.Pool.Query(ctx, sql, args...)
+	if err != nil {
+		return nil, fmt.Errorf("can't to find user by email: %w", err)
+	}
+	defer rows.Close()
+
+	var user entity.User
+	if rows.Next() {
+		err := rows.Scan(&user.ID, &user.Email, &user.PassHash, &user.Role)
+		if err != nil {
+			return nil, fmt.Errorf("can't to scan user: %w", err)
+		}
+		return &user, nil
+	}
+
+	return nil, entity.ErrUserNotFound
 }

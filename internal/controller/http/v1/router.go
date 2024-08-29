@@ -4,11 +4,10 @@ package v1
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
 	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/logger"
+	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // NewRouter -.

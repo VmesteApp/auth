@@ -6,3 +6,6 @@ logger:
 
 postgres:
   pool_max: 2
+
+jwt:
+  token_ttl: 24h

@@ -2,16 +2,18 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type (
 	Config struct {
-		HTTP  `yaml:"http"`
-		Log   `yaml:"logger"`
-		PG    `yaml:"postgres"`
-		VkAPI `yaml:"vk_api"`
+		HTTP      `yaml:"http"`
+		Log       `yaml:"logger"`
+		PG        `yaml:"postgres"`
+		VkAPI     `yaml:"vk_api"`
+		JwtConfig `yaml:"jwt"`
 	}
 
 	HTTP struct {
@@ -31,6 +33,11 @@ type (
 		AppId      int    `env-required:"true" yaml:"app_id" env:"VK_APP_ID"`
 		PrivateKey string `env-required:"true" env:"VK_PRIVATE_KEY"`
 		ServiceKey string `env-required:"true" env:"VK_SERVICE_KEY"`
+	}
+
+	JwtConfig struct {
+		Secret string        `env-required:"true" env:"JWT_TOKEN_SECRET"`
+		TTL    time.Duration `env-required:"true" yaml:"token_ttl" env:"JWT_TOKEN_TTL"`
 	}
 )
 
