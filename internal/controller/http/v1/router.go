@@ -8,6 +8,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/VmesteApp/auth-service/config"
+	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/logger"
 	"github.com/VmesteApp/auth-service/pkg/middlewares"
@@ -33,7 +34,7 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, cfg *con
 	}
 
 	{
-		h := handler.Group("/v1/admin", middlewares.AuthMiddleware(cfg.JwtConfig.Secret))
+		h := handler.Group("/v1/admin", middlewares.AuthMiddleware(cfg.JwtConfig.Secret), middlewares.RoleMiddleware(string(entity.UserRole)))
 
 		newAdminRoutes(h, l)
 	}
