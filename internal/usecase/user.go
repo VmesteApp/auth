@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/VmesteApp/auth-service/internal/entity"
@@ -79,7 +80,34 @@ func (u *UserUseCase) VkLogin(ctx context.Context, userAccessToken string) (stri
 		return "", err
 	}
 
-	_ = tokenInfo.UserId
+	fmt.Println(tokenInfo)
 
-	return "jwt token", nil
+	user, err := u.repo.SocialUser(ctx, "vk", strconv.Itoa(tokenInfo.UserId))
+	if errors.Is(err, entity.ErrUserNotFound) {
+		user, err := u.repo.SaveSocialUser(ctx, "vk", strconv.Itoa(tokenInfo.UserId))
+		if err != nil {
+			return "", fmt.Errorf("failed save social login: %w", err)
+		}
+		return u.doToken(user.ID, user.Role)
+	}
+	if err != nil {
+		return "", fmt.Errorf("failed get user by social login: %w", err)
+
+	}
+
+	return u.doToken(user.ID, user.Role)
+}
+
+func (u *UserUseCase) doToken(userId uint64, role entity.Role) (string, error) {
+	payload := map[string]any{
+		"uid":  userId,
+		"role": role,
+	}
+
+	token, err := jwt.NewToken(payload, u.tokenSecret, u.tokenTTL)
+	if err != nil {
+		return "", fmt.Errorf("can't generate token: %w", err)
+	}
+
+	return token, nil
 }
