@@ -9,11 +9,12 @@ import (
 
 type (
 	Config struct {
-		HTTP      `yaml:"http"`
-		Log       `yaml:"logger"`
-		PG        `yaml:"postgres"`
-		VkAPI     `yaml:"vk_api"`
-		JwtConfig `yaml:"jwt"`
+		HTTP             `yaml:"http"`
+		Log              `yaml:"logger"`
+		PG               `yaml:"postgres"`
+		VkAPI            `yaml:"vk_api"`
+		JwtConfig        `yaml:"jwt"`
+		SuperAdminConfig `yaml:"superadmin"`
 	}
 
 	HTTP struct {
@@ -38,6 +39,11 @@ type (
 	JwtConfig struct {
 		Secret string        `env-required:"true" env:"JWT_TOKEN_SECRET"`
 		TTL    time.Duration `env-required:"true" yaml:"token_ttl" env:"JWT_TOKEN_TTL"`
+	}
+
+	SuperAdminConfig struct {
+		Email    string `env-required:"true" env:"SUPER_ADMIN_EMAIL"`
+		Password string `env-required:"true" env:"SUPER_ADMIN_PASSWORD"`
 	}
 )
 

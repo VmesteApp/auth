@@ -34,7 +34,11 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, cfg *con
 	}
 
 	{
-		h := handler.Group("/v1/admin", middlewares.AuthMiddleware(cfg.JwtConfig.Secret), middlewares.RoleMiddleware(string(entity.UserRole)))
+		h := handler.Group(
+			"/v1/admin",
+			middlewares.AuthMiddleware(cfg.JwtConfig.Secret),
+			middlewares.RoleMiddleware(string(entity.SuperAdminRole)),
+		)
 
 		newAdminRoutes(h, l)
 	}

@@ -23,11 +23,18 @@ func Run(cfg *config.Config) {
 	l.Info("logger init")
 
 	pg, err := postgres.New(cfg.PG.URL, postgres.MaxPoolSize(cfg.PG.PoolMax))
+
 	if err != nil {
 		l.Fatal(fmt.Errorf("app - Run - postgres.New: %w", err))
 	}
 	defer pg.Close()
 	l.Info("connected to database")
+
+	err = InitSuperAdmin(pg, cfg.SuperAdminConfig)
+	if err != nil {
+		l.Fatal(fmt.Errorf("app - Run - app.InitSuperAdmin: %w", err))
+	}
+	l.Info("%s is current superadmin!", cfg.SuperAdminConfig.Email)
 
 	userUseCase := usecase.New(repo.NewUserRepository(pg), webapi.New(cfg.AppId, cfg.ServiceKey), cfg.JwtConfig.Secret, cfg.JwtConfig.TTL)
 
