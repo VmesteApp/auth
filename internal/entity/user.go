@@ -1,14 +1,26 @@
 package entity
 
-import "errors"
+import (
+	"errors"
+)
 
 type User struct {
-	ID       int64  `json:"id"`
-	Email    string `json:"email"`
+	ID           uint64         `json:"id"`
+	Email        string         `json:"email"`
+	Role         Role           `json:"role"`
+	SocialLogins []*SocialLogin `json:"socialLogins,omitempty"`
+
 	PassHash []byte
-	Role     Role `json:"role"`
 }
+
 type Role string
+
+type SocialLogin struct {
+	ID         uint64    `json:"id"`
+	UserID     uint64    `json:"userId"`
+	ProviderID uint64    `json:"providerId"`
+	Provider   string    `json:"provider"`
+}
 
 const (
 	UserRole       Role = "user"
