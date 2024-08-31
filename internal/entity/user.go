@@ -18,7 +18,7 @@ type Role string
 type SocialLogin struct {
 	ID         uint64    `json:"id"`
 	UserID     uint64    `json:"userId"`
-	ProviderID uint64    `json:"providerId"`
+	ProviderID string    `json:"providerId"`
 	Provider   string    `json:"provider"`
 }
 
