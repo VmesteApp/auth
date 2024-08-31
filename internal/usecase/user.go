@@ -7,9 +7,10 @@ import (
 	"strconv"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/pkg/jwt"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUseCase struct {
@@ -92,7 +93,6 @@ func (u *UserUseCase) VkLogin(ctx context.Context, userAccessToken string) (stri
 	}
 	if err != nil {
 		return "", fmt.Errorf("failed get user by social login: %w", err)
-
 	}
 
 	return u.doToken(user.ID, user.Role)

@@ -4,11 +4,10 @@ package v1
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
 	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/logger"
+	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // NewRouter -.
@@ -24,9 +23,15 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User) {
 	handler.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	// Routers
-	h := handler.Group("/v1")
+	{
+		h := handler.Group("/v1")
+
+		newUserRoutes(h, t, l)
+	}
 
 	{
-		newUserRoutes(h, t, l)
+		h := handler.Group("/v1/admin")
+
+		newAdminRoutes(h, l)
 	}
 }
