@@ -4,14 +4,17 @@ package v1
 import (
 	"net/http"
 
-	"github.com/VmesteApp/auth-service/internal/usecase"
-	"github.com/VmesteApp/auth-service/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	"github.com/VmesteApp/auth-service/config"
+	"github.com/VmesteApp/auth-service/internal/usecase"
+	"github.com/VmesteApp/auth-service/pkg/logger"
+	"github.com/VmesteApp/auth-service/pkg/middlewares"
 )
 
 // NewRouter -.
-func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User) {
+func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, cfg *config.Config) {
 	// Options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
@@ -30,7 +33,7 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User) {
 	}
 
 	{
-		h := handler.Group("/v1/admin")
+		h := handler.Group("/v1/admin", middlewares.AuthMiddleware(cfg.JwtConfig.Secret))
 
 		newAdminRoutes(h, l)
 	}

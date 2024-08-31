@@ -7,10 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/pkg/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUseCase struct {

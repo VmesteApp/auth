@@ -4,10 +4,11 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/logger"
-	"github.com/gin-gonic/gin"
 )
 
 type userRoutes struct {

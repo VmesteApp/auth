@@ -6,6 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/VmesteApp/auth-service/config"
 	v1 "github.com/VmesteApp/auth-service/internal/controller/http/v1"
 	"github.com/VmesteApp/auth-service/internal/usecase"
@@ -14,7 +16,6 @@ import (
 	"github.com/VmesteApp/auth-service/pkg/httpserver"
 	"github.com/VmesteApp/auth-service/pkg/logger"
 	"github.com/VmesteApp/auth-service/pkg/postgres"
-	"github.com/gin-gonic/gin"
 )
 
 func Run(cfg *config.Config) {
@@ -31,7 +32,7 @@ func Run(cfg *config.Config) {
 	userUseCase := usecase.New(repo.NewUserRepository(pg), webapi.New(cfg.AppId, cfg.ServiceKey), cfg.JwtConfig.Secret, cfg.JwtConfig.TTL)
 
 	handler := gin.New()
-	v1.NewRouter(handler, l, userUseCase)
+	v1.NewRouter(handler, l, userUseCase, cfg)
 
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 

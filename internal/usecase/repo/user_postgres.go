@@ -5,10 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/jackc/pgconn"
-
 	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/pkg/postgres"
+	"github.com/jackc/pgconn"
 )
 
 type UserRepository struct {
