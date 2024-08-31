@@ -16,10 +16,10 @@ type User struct {
 type Role string
 
 type SocialLogin struct {
-	ID         uint64    `json:"id"`
-	UserID     uint64    `json:"userId"`
-	ProviderID string    `json:"providerId"`
-	Provider   string    `json:"provider"`
+	ID         uint64 `json:"id"`
+	UserID     uint64 `json:"userId"`
+	ProviderID string `json:"providerId"`
+	Provider   string `json:"provider"`
 }
 
 const (
