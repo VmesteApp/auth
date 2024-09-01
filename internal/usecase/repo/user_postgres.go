@@ -156,3 +156,15 @@ func (u *UserRepository) SocialUser(ctx context.Context, provider, providerId st
 
 	return nil, entity.ErrUserNotFound
 }
+
+func (u *UserRepository) Admins(ctx context.Context) ([]entity.User, error) {
+	panic("unimplemented")
+}
+
+func (u *UserRepository) DeleteAdmin(userID uint64) error {
+	panic("unimplemented")
+}
+
+func (u *UserRepository) SaveAdmin(email string, password string) error {
+	panic("unimplemented")
+}

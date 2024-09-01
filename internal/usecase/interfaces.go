@@ -6,6 +6,7 @@ import (
 	"github.com/VmesteApp/auth-service/internal/entity"
 )
 
+// User Routes
 type (
 	User interface {
 		CreateAccount(ctx context.Context, email, password string) error
@@ -20,5 +21,19 @@ type (
 	}
 	VkWebApi interface {
 		ValidateUserAccessToken(userAccessToken string) (*entity.VkTokenInfo, error)
+	}
+)
+
+// Admin Routes
+type (
+	Admin interface {
+		Admins(ctx context.Context) ([]entity.User, error)
+		CreateAdmin(ctx context.Context, email, password string) error
+		DeleteAdmin(ctx context.Context, userID uint64) error
+	}
+	AdminRepo interface {
+		Admins(ctx context.Context) ([]entity.User, error)
+		SaveAdmin(email, password string) error
+		DeleteAdmin(userID uint64) error
 	}
 )

@@ -15,7 +15,7 @@ import (
 )
 
 // NewRouter -.
-func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, cfg *config.Config) {
+func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, a usecase.Admin, cfg *config.Config) {
 	// Options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
@@ -40,6 +40,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, cfg *con
 			middlewares.RoleMiddleware(string(entity.SuperAdminRole)),
 		)
 
-		newAdminRoutes(h, l)
+		newAdminRoutes(h, a, l)
 	}
 }

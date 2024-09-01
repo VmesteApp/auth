@@ -3,17 +3,20 @@ package v1
 import (
 	"net/http"
 
+	"github.com/VmesteApp/auth-service/internal/usecase"
 	"github.com/VmesteApp/auth-service/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 
 type adminRoutes struct {
+	u usecase.Admin
 	l logger.Interface
 }
 
-func newAdminRoutes(handler *gin.RouterGroup, l logger.Interface) {
+func newAdminRoutes(handler *gin.RouterGroup, u usecase.Admin, l logger.Interface) {
 	routes := &adminRoutes{
 		l: l,
+		u: u,
 	}
 
 	handler.GET("/", routes.doGetAllAdmins)
@@ -31,6 +34,7 @@ type doCreateNewAdminRequest struct {
 }
 
 func (a *adminRoutes) doCreateNewAdmin(ctx *gin.Context) {
+
 	ctx.JSON(http.StatusOK, nil)
 }
 
