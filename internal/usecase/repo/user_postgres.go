@@ -19,25 +19,7 @@ func NewUserRepository(pg *postgres.Postgres) *UserRepository {
 }
 
 func (u *UserRepository) SaveUser(ctx context.Context, email string, passHash []byte) error {
-	sql, args, err := u.Builder.
-		Insert("users").
-		Columns("email", "pass_hash").
-		Values(email, passHash).
-		ToSql()
-	if err != nil {
-		return fmt.Errorf("can't to save user: %w", err)
-	}
-
-	_, err = u.Pool.Exec(ctx, sql, args...)
-	if err != nil {
-		if code, _ := err.(*pgconn.PgError); code.Code == "23505" {
-			return entity.ErrUserExists
-		}
-
-		return fmt.Errorf("can't to save user: %w", err)
-	}
-
-	return nil
+	return u.doSaveUser(ctx, email, passHash, entity.UserRole)
 }
 
 // TODO: are there need join of SocialLogin?
@@ -105,7 +87,6 @@ func (u *UserRepository) SaveSocialUser(ctx context.Context, provider, providerI
 			VALUES ($1, $2, $3)
 	`
 
-	fmt.Println(newUserId, provider, providerID)
 	_, err = tx.Exec(ctx, sql, newUserId, provider, providerID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to insert social_logins: %w", err)
@@ -182,10 +163,32 @@ func (u *UserRepository) Admins(ctx context.Context) ([]entity.Admin, error) {
 	return admins, nil
 }
 
-func (u *UserRepository) DeleteAdmin(userID uint64) error {
-	panic("unimplemented")
+func (u *UserRepository) DeleteAdmin(ctx context.Context, userID uint64) error {
+	sql := `DELETE FROM users WHERE id = $1`
+
+	_, err := u.Pool.Exec(ctx, sql, userID)
+	if err != nil {
+		return fmt.Errorf("can't delete user: %w", err)
+	}
+
+	return nil
 }
 
-func (u *UserRepository) SaveAdmin(email string, password string) error {
-	panic("unimplemented")
+func (u *UserRepository) SaveAdmin(ctx context.Context, email string, passHash []byte) error {
+	return u.doSaveUser(ctx, email, passHash, entity.AdminRole)
+}
+
+func (u *UserRepository) doSaveUser(ctx context.Context, email string, passHash []byte, role entity.Role) error {
+	sql := `INSERT INTO users (email, pass_hash, role) VALUES ($1, $2, $3)`
+
+	_, err := u.Pool.Exec(ctx, sql, email, passHash, role)
+	if err != nil {
+		if code, _ := err.(*pgconn.PgError); code.Code == "23505" {
+			return entity.ErrUserExists
+		}
+
+		return fmt.Errorf("can't to save user: %w", err)
+	}
+
+	return nil
 }

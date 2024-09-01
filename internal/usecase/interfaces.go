@@ -33,7 +33,7 @@ type (
 	}
 	AdminRepo interface {
 		Admins(ctx context.Context) ([]entity.Admin, error)
-		SaveAdmin(email, password string) error
-		DeleteAdmin(userID uint64) error
+		SaveAdmin(ctx context.Context, email string, passHash []byte) error
+		DeleteAdmin(ctx context.Context, userID uint64) error
 	}
 )
