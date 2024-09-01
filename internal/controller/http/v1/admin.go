@@ -25,7 +25,15 @@ func newAdminRoutes(handler *gin.RouterGroup, u usecase.Admin, l logger.Interfac
 }
 
 func (a *adminRoutes) doGetAllAdmins(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, nil)
+	admins, err := a.u.Admins(ctx.Request.Context())
+	if err != nil {
+		a.l.Error(err, "http - v1 - doGetAllAdmins")
+		errorResponse(ctx, http.StatusInternalServerError, "SSO service problems")
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, admins)
 }
 
 type doCreateNewAdminRequest struct {

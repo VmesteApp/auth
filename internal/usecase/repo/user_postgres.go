@@ -157,8 +157,29 @@ func (u *UserRepository) SocialUser(ctx context.Context, provider, providerId st
 	return nil, entity.ErrUserNotFound
 }
 
-func (u *UserRepository) Admins(ctx context.Context) ([]entity.User, error) {
-	panic("unimplemented")
+func (u *UserRepository) Admins(ctx context.Context) ([]entity.Admin, error) {
+	sql := `SELECT id, email FROM users WHERE role = $1`
+
+	rows, err := u.Pool.Query(ctx, sql, entity.AdminRole)
+	if err != nil {
+		return nil, fmt.Errorf("can't find admins: %w", err)
+	}
+	defer rows.Close()
+
+	var admins = make([]entity.Admin, 0)
+
+	for rows.Next() {
+		var admin entity.Admin
+
+		err = rows.Scan(&admin.UserID, &admin.Email)
+		if err != nil {
+			return nil, fmt.Errorf("can't scan admin: %w", err)
+		}
+
+		admins = append(admins, admin)
+	}
+
+	return admins, nil
 }
 
 func (u *UserRepository) DeleteAdmin(userID uint64) error {

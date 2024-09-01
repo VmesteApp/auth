@@ -27,12 +27,12 @@ type (
 // Admin Routes
 type (
 	Admin interface {
-		Admins(ctx context.Context) ([]entity.User, error)
+		Admins(ctx context.Context) ([]entity.Admin, error)
 		CreateAdmin(ctx context.Context, email, password string) error
 		DeleteAdmin(ctx context.Context, userID uint64) error
 	}
 	AdminRepo interface {
-		Admins(ctx context.Context) ([]entity.User, error)
+		Admins(ctx context.Context) ([]entity.Admin, error)
 		SaveAdmin(email, password string) error
 		DeleteAdmin(userID uint64) error
 	}

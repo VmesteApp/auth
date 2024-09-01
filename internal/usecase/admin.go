@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/VmesteApp/auth-service/internal/entity"
 )
@@ -16,8 +17,13 @@ func NewAdminUseCase(repo AdminRepo) *AdminUseCase {
 	}
 }
 
-func (u *AdminUseCase) Admins(ctx context.Context) ([]entity.User, error) {
-	return []entity.User{}, nil
+func (u *AdminUseCase) Admins(ctx context.Context) ([]entity.Admin, error) {
+	admins, err := u.repo.Admins(ctx)
+	if err != nil {
+		return []entity.Admin{}, fmt.Errorf("can't get all admins: %w", err)
+	}
+
+	return admins, nil
 }
 
 func (u *AdminUseCase) CreateAdmin(ctx context.Context, email, password string) error {
