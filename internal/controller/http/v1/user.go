@@ -59,6 +59,12 @@ type doLoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type doLoginResponse struct {
+	Token  string      `json:"token"`
+	UserID uint64      `json:"userId"`
+	Role   entity.Role `json:"role"`
+}
+
 func (r *userRoutes) doLoginByEmail(ctx *gin.Context) {
 	var request doLoginRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -68,7 +74,7 @@ func (r *userRoutes) doLoginByEmail(ctx *gin.Context) {
 		return
 	}
 
-	token, err := r.u.Login(ctx.Request.Context(), request.Email, request.Password)
+	user, token, err := r.u.Login(ctx.Request.Context(), request.Email, request.Password)
 	if errors.Is(err, entity.ErrUserNotFound) {
 		errorResponse(ctx, http.StatusConflict, "user not found")
 
@@ -86,9 +92,13 @@ func (r *userRoutes) doLoginByEmail(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]string{
-		"token": token,
-	})
+	res := doLoginResponse{
+		Token:  token,
+		UserID: user.ID,
+		Role:   user.Role,
+	}
+
+	ctx.JSON(http.StatusOK, res)
 }
 
 type doLoginByVkRequest struct {
@@ -104,7 +114,7 @@ func (r *userRoutes) doLoginByVk(ctx *gin.Context) {
 		return
 	}
 
-	token, err := r.u.VkLogin(ctx.Request.Context(), request.VkAccessToken)
+	user, token, err := r.u.VkLogin(ctx.Request.Context(), request.VkAccessToken)
 	if errors.Is(err, entity.ErrBadVkToken) {
 		errorResponse(ctx, http.StatusBadRequest, "wrong access_token")
 		return
@@ -120,7 +130,11 @@ func (r *userRoutes) doLoginByVk(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, map[string]string{
-		"token": token,
-	})
+	res := doLoginResponse{
+		Token:  token,
+		UserID: user.ID,
+		Role:   user.Role,
+	}
+
+	ctx.JSON(http.StatusOK, res)
 }
