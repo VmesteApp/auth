@@ -21,21 +21,21 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, a usecas
 	handler.Use(gin.Recovery())
 
 	// K8s probe
-	handler.GET("/healthz", func(c *gin.Context) { c.Status(http.StatusOK) })
+	handler.GET("/auth/healthz", func(c *gin.Context) { c.Status(http.StatusOK) })
 
 	// Prometheus metrics
-	handler.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	handler.GET("/auth/metrics", gin.WrapH(promhttp.Handler()))
 
 	// Routers
 	{
-		h := handler.Group("/v1")
+		h := handler.Group("/auth")
 
 		newUserRoutes(h, t, l)
 	}
 
 	{
 		h := handler.Group(
-			"/v1/admin",
+			"/auth/admin",
 			middlewares.AuthMiddleware(cfg.JwtConfig.Secret),
 			middlewares.RoleMiddleware(string(entity.SuperAdminRole)),
 		)
