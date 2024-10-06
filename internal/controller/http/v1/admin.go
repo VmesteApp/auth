@@ -27,6 +27,17 @@ func newAdminRoutes(handler *gin.RouterGroup, u usecase.Admin, l logger.Interfac
 	handler.DELETE("/:id", routes.doDeleteAdmin)
 }
 
+// @Summary     Get all admins
+// @Description Get all admins (method for superadmin)
+// @ID          admin-list
+// @Tags  	    admins
+// @Accept      json
+// @Success     200 {array} entity.Admin
+// @Failure     403
+// @Failure     500
+// @Produce     json
+// @Router      /admin [get]
+// @Security    BearerAuth
 func (a *adminRoutes) doGetAllAdmins(ctx *gin.Context) {
 	admins, err := a.u.Admins(ctx.Request.Context())
 	if err != nil {
@@ -44,6 +55,21 @@ type doCreateNewAdminRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// @Summary     Create new admin
+// @Description Create new admin (method for superadmin)
+// @ID          admin-create
+// @Tags  	    admins
+// @Param 			request body doCreateNewAdminRequest true "query params"
+// @Accept      json
+// @Success     200
+// @Failure     400
+// @Failure     401
+// @Failure     403
+// @Failure     409
+// @Failure     500
+// @Produce     json
+// @Router      /admin [post]
+// @Security    BearerAuth
 func (a *adminRoutes) doCreateNewAdmin(ctx *gin.Context) {
 	var request doCreateNewAdminRequest
 
@@ -69,6 +95,15 @@ func (a *adminRoutes) doCreateNewAdmin(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, nil)
 }
 
+// @Summary     Delete admin
+// @Description Delete admin by id (method for superadmin)
+// @ID          admin-delete
+// @Tags  	    admins
+// @Accept      json
+// @Produce     json
+// @Param       id   path      int  true  "User ID"
+// @Router      /admin/{id} [delete]
+// @Security    BearerAuth
 func (a *adminRoutes) doDeleteAdmin(ctx *gin.Context) {
 	id := ctx.Param("id")
 

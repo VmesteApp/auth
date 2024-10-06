@@ -29,6 +29,19 @@ type doRegisterNewUserRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// @Summary     Create account
+// @Description Create account by email and password
+// @ID          register
+// @Tags  	    login
+// @Param 			request body doRegisterNewUserRequest true "query params"
+// @Accept      json
+// @Success     200
+// @Failure     400
+// @Failure     401
+// @Failure     409
+// @Failure     500
+// @Produce     json
+// @Router      /register [post]
 func (r *userRoutes) doRegisterNewUser(ctx *gin.Context) {
 	var request doRegisterNewUserRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -65,11 +78,17 @@ type doLoginResponse struct {
 	Role   entity.Role `json:"role"`
 }
 
-// @Summary     Login By Email
-// @Description Login By Email (for admin and superadmin users)
-// @ID          loginByEmail
+// @Summary     Login by email
+// @Description Login by email for admin and superadmin users
+// @ID          login
 // @Tags  	    login
+// @Param 			request body doLoginRequest true "query params"
 // @Accept      json
+// @Success     200  {object}   doLoginResponse
+// @Failure     400
+// @Failure     401
+// @Failure     409
+// @Failure     500
 // @Produce     json
 // @Router      /login [post]
 func (r *userRoutes) doLoginByEmail(ctx *gin.Context) {
@@ -112,6 +131,18 @@ type doLoginByVkRequest struct {
 	VkAccessToken string `json:"vkAccessToken" binding:"required"`
 }
 
+// @Summary     Login by VK
+// @Description Login by VK for users
+// @ID          login-vk
+// @Tags  	    login
+// @Param 			request body doLoginByVkRequest true "query params"
+// @Accept      json
+// @Success     200  {object}  doLoginResponse
+// @Failure     400
+// @Failure     401
+// @Failure     500
+// @Produce     json
+// @Router      /login/vk [post]
 func (r *userRoutes) doLoginByVk(ctx *gin.Context) {
 	var request doLoginByVkRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {

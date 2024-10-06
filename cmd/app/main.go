@@ -1,6 +1,14 @@
 // @title           vmesteapp/auth-service
 // @version         1.0
-// @description     SSO service for vmesteapp.ru.
+// @description     SSO service for VmesteApp
+
+// @host      vmesteapp.ru
+// @BasePath  /auth
+// @schemes https http
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 package main
 
 import (

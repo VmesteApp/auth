@@ -1,19 +1,246 @@
+basePath: /auth
+definitions:
+  entity.Admin:
+    properties:
+      email:
+        type: string
+      userId:
+        type: integer
+    type: object
+  entity.Role:
+    enum:
+    - user
+    - admin
+    - superadmin
+    type: string
+    x-enum-varnames:
+    - UserRole
+    - AdminRole
+    - SuperAdminRole
+  v1.doCreateNewAdminRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  v1.doLoginByVkRequest:
+    properties:
+      vkAccessToken:
+        type: string
+    required:
+    - vkAccessToken
+    type: object
+  v1.doLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  v1.doLoginResponse:
+    properties:
+      role:
+        $ref: '#/definitions/entity.Role'
+      token:
+        type: string
+      userId:
+        type: integer
+    type: object
+  v1.doRegisterNewUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+host: vmesteapp.ru
 info:
   contact: {}
-  description: SSO service for vmesteapp.ru.
+  description: SSO service for VmesteApp
   title: vmesteapp/auth-service
   version: "1.0"
 paths:
+  /admin:
+    get:
+      consumes:
+      - application/json
+      description: Get all admins (method for superadmin)
+      operationId: admin-list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Admin'
+            type: array
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get all admins
+      tags:
+      - admins
+    post:
+      consumes:
+      - application/json
+      description: Create new admin (method for superadmin)
+      operationId: admin-create
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.doCreateNewAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Create new admin
+      tags:
+      - admins
+  /admin/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete admin by id (method for superadmin)
+      operationId: admin-delete
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Delete admin
+      tags:
+      - admins
   /login:
     post:
       consumes:
       - application/json
-      description: Login By Email (for admin and superadmin users)
-      operationId: loginByEmail
+      description: Login by email for admin and superadmin users
+      operationId: login
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.doLoginRequest'
       produces:
       - application/json
-      responses: {}
-      summary: Login By Email
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.doLoginResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+      summary: Login by email
       tags:
       - login
+  /login/vk:
+    post:
+      consumes:
+      - application/json
+      description: Login by VK for users
+      operationId: login-vk
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.doLoginByVkRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.doLoginResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Login by VK
+      tags:
+      - login
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Create account by email and password
+      operationId: register
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.doRegisterNewUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "409":
+          description: Conflict
+        "500":
+          description: Internal Server Error
+      summary: Create account
+      tags:
+      - login
+schemes:
+- https
+- http
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
