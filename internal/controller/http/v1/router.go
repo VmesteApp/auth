@@ -22,14 +22,14 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, a usecas
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
 
+	// API docs
+	handler.GET("auth/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	// K8s probe
 	handler.GET("/auth/healthz", func(c *gin.Context) { c.Status(http.StatusOK) })
 
 	// Prometheus metrics
 	handler.GET("/auth/metrics", gin.WrapH(promhttp.Handler()))
-
-	// API docs
-	handler.GET("/auth/docs", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Routers
 	{

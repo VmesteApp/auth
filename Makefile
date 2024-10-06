@@ -64,5 +64,5 @@ bin-deps: ### install deps
 .PHONY: bin-deps
 
 generate-docs: ### generate API docs
-	./bin/swag init --dir cmd/app,internal/controller/http/v1
+	./bin/swag init -g cmd/app/main.go
 .PHONY: generate-docs
