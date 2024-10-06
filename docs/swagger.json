@@ -1,0 +1,28 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "SSO service for vmesteapp.ru.",
+        "title": "vmesteapp/auth-service",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/login": {
+            "post": {
+                "description": "Login By Email (for admin and superadmin users)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "login"
+                ],
+                "summary": "Login By Email",
+                "operationId": "loginByEmail",
+                "responses": {}
+            }
+        }
+    }
+}

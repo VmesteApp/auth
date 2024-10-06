@@ -1,0 +1,19 @@
+info:
+  contact: {}
+  description: SSO service for vmesteapp.ru.
+  title: vmesteapp/auth-service
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login By Email (for admin and superadmin users)
+      operationId: loginByEmail
+      produces:
+      - application/json
+      responses: {}
+      summary: Login By Email
+      tags:
+      - login
+swagger: "2.0"

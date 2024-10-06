@@ -6,6 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/VmesteApp/auth-service/docs"
 
 	"github.com/VmesteApp/auth-service/config"
 	"github.com/VmesteApp/auth-service/internal/entity"
@@ -14,9 +18,7 @@ import (
 	"github.com/VmesteApp/auth-service/pkg/middlewares"
 )
 
-// NewRouter -.
 func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, a usecase.Admin, cfg *config.Config) {
-	// Options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
 
@@ -25,6 +27,9 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, a usecas
 
 	// Prometheus metrics
 	handler.GET("/auth/metrics", gin.WrapH(promhttp.Handler()))
+
+	// API docs
+	handler.GET("/auth/docs", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Routers
 	{

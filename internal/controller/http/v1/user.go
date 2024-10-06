@@ -65,6 +65,13 @@ type doLoginResponse struct {
 	Role   entity.Role `json:"role"`
 }
 
+// @Summary     Login By Email
+// @Description Login By Email (for admin and superadmin users)
+// @ID          loginByEmail
+// @Tags  	    login
+// @Accept      json
+// @Produce     json
+// @Router      /login [post]
 func (r *userRoutes) doLoginByEmail(ctx *gin.Context) {
 	var request doLoginRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {

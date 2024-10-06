@@ -60,4 +60,9 @@ bin-deps: ### install deps
 	GOBIN=$(LOCAL_BIN) go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	GOBIN=$(LOCAL_BIN) go install github.com/golang/mock/mockgen@latest
 	GOBIN=$(LOCAL_BIN) go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	GOBIN=$(LOCAL_BIN) go install github.com/swaggo/swag/cmd/swag@latest
 .PHONY: bin-deps
+
+generate-docs: ### generate API docs
+	./bin/swag init --dir cmd/app,internal/controller/http/v1
+.PHONY: generate-docs

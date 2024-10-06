@@ -1,9 +1,13 @@
+// @title           vmesteapp/auth-service
+// @version         1.0
+// @description     SSO service for vmesteapp.ru.
 package main
 
 import (
 	"log"
 
 	"github.com/VmesteApp/auth-service/config"
+	_ "github.com/VmesteApp/auth-service/docs"
 	"github.com/VmesteApp/auth-service/internal/app"
 )
 
