@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"reflect"
+	"strconv"
 
 	"github.com/VmesteApp/auth-service/internal/entity"
 	"github.com/VmesteApp/auth-service/pkg/postgres"
@@ -191,4 +193,31 @@ func (u *UserRepository) doSaveUser(ctx context.Context, email string, passHash 
 	}
 
 	return nil
+}
+
+func (u *UserRepository) VkProfile(ctx context.Context, userID uint64) (entity.VkProfile, error) {
+	sql := `SELECT provider_id FROM social_logins WHERE provider = 'vk' AND user_id = $1`
+
+	var parsedVkID string
+
+	err := u.Pool.QueryRow(ctx, sql, userID).Scan(&parsedVkID)
+	fmt.Println(reflect.TypeOf(err))
+
+	if err != nil {
+		if err.Error() == "no rows in result set" {
+			return entity.VkProfile{}, entity.ErrUserNotFound
+		}
+
+		return entity.VkProfile{}, fmt.Errorf("can't to get social logins: %w", err)
+	}
+
+	vkID, err := strconv.Atoi(parsedVkID)
+	if err != nil {
+		return entity.VkProfile{}, fmt.Errorf("can't parse provider id: %w", err)
+	}
+
+	return entity.VkProfile{
+		UserID: userID,
+		VkID:   vkID,
+	}, nil
 }

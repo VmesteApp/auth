@@ -36,11 +36,14 @@ func Run(cfg *config.Config) {
 	}
 	l.Info("%s is current superadmin!", cfg.SuperAdminConfig.Email)
 
-	userUseCase := usecase.New(repo.NewUserRepository(pg), webapi.New(cfg.AppId, cfg.ServiceKey), cfg.JwtConfig.Secret, cfg.JwtConfig.TTL)
-	adminUseCase := usecase.NewAdminUseCase(repo.NewUserRepository(pg))
+	userRepository := repo.NewUserRepository(pg)
+
+	userUseCase := usecase.New(userRepository, webapi.New(cfg.AppId, cfg.ServiceKey), cfg.JwtConfig.Secret, cfg.JwtConfig.TTL)
+	adminUseCase := usecase.NewAdminUseCase(userRepository)
+	profileUseCase := usecase.NewProfileUseCase(userRepository)
 
 	handler := gin.New()
-	v1.NewRouter(handler, l, userUseCase, adminUseCase, cfg)
+	v1.NewRouter(handler, l, userUseCase, adminUseCase, profileUseCase, cfg)
 
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 

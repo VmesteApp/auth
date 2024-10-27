@@ -37,3 +37,12 @@ type (
 		DeleteAdmin(ctx context.Context, userID uint64) error
 	}
 )
+
+type (
+	Profile interface {
+		VkProfile(ctx context.Context, userID uint64) (entity.VkProfile, error)
+	}
+	ProfileRepo interface {
+		VkProfile(ctx context.Context, userID uint64) (entity.VkProfile, error)
+	}
+)

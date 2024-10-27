@@ -18,7 +18,7 @@ import (
 	"github.com/VmesteApp/auth-service/pkg/middlewares"
 )
 
-func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, a usecase.Admin, cfg *config.Config) {
+func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, a usecase.Admin, p usecase.Profile, cfg *config.Config) {
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
 
@@ -46,5 +46,11 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.User, a usecas
 		)
 
 		newAdminRoutes(h, a, l)
+	}
+
+	{
+		h := handler.Group("/auth/profile", middlewares.AuthMiddleware(cfg.JwtConfig.Secret))
+
+		newProfileRoutes(h, p, l)
 	}
 }
