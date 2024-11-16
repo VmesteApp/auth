@@ -10,6 +10,7 @@ import (
 type (
 	Config struct {
 		HTTP             `yaml:"http"`
+		GRPC             `yaml:"grpc"`
 		Log              `yaml:"logger"`
 		PG               `yaml:"postgres"`
 		VkAPI            `yaml:"vk_api"`
@@ -18,6 +19,10 @@ type (
 	}
 
 	HTTP struct {
+		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+	}
+
+	GRPC struct {
 		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
 	}
 

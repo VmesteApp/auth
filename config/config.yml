@@ -1,6 +1,9 @@
 http:
   port: '8080'
 
+grpc:
+  port: '44044'
+
 logger:
   level: 'debug'
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"reflect"
 	"strconv"
 
 	"github.com/VmesteApp/auth-service/internal/entity"
@@ -201,7 +200,6 @@ func (u *UserRepository) VkProfile(ctx context.Context, userID uint64) (entity.V
 	var parsedVkID string
 
 	err := u.Pool.QueryRow(ctx, sql, userID).Scan(&parsedVkID)
-	fmt.Println(reflect.TypeOf(err))
 
 	if err != nil {
 		if err.Error() == "no rows in result set" {
