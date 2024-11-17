@@ -1,7 +1,13 @@
+networks:
+  dev:
+    driver: bridge
+
 services:
   postgres:
     container_name: postgres
     image: postgres
+    networks:
+      - dev
     volumes:
       - pg-data:/var/lib/postgresql/data
     environment:
@@ -20,6 +26,8 @@ services:
     ports:
       - 8080:8080
       - 44044:44044
+    networks:
+      - dev
     depends_on:
       - postgres
     env_file:
