@@ -3,6 +3,7 @@ package profile
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/VmesteApp/auth-service/internal/entity"
 	profilev1 "github.com/VmesteApp/protobuf/gen/go/profile"
@@ -25,12 +26,15 @@ func Register(gRPC *grpc.Server, profile Profile) {
 }
 
 func (s *serverApi) GetVkID(context context.Context, req *profilev1.GetVkIDRequest) (*profilev1.GetVkIDResponse, error) {
+	fmt.Println(uint64(req.UserID))
+	fmt.Println(req)
 	vkProfile, err := s.profile.VkProfile(context, uint64(req.UserID))
 
 	if errors.Is(err, entity.ErrUserNotFound) {
 		return nil, status.Error(codes.NotFound, "user not found")
 	}
 	if err != nil {
+		fmt.Println(err)
 		return nil, status.Error(codes.Internal, "failed get vk id")
 	}
 
