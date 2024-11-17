@@ -1,6 +1,6 @@
 networks:
   dev:
-    driver: bridge
+    external: true
 
 services:
   postgres:
