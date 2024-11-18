@@ -1,6 +1,8 @@
 networks:
   dev:
     external: true
+  pg_auth:
+
 
 services:
   postgres:
@@ -12,6 +14,8 @@ services:
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "pass"
       POSTGRES_DB: "postgres"
+    networks:
+      - pg_auth
     ports:
       - 5432:5432
 
