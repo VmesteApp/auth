@@ -202,7 +202,51 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/v1.doLoginByVkRequest"
+                            "$ref": "#/definitions/v1.doVkLoginByLaunchParamsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.doLoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/login/vk/access-token": {
+            "post": {
+                "description": "Login by VK for users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "login"
+                ],
+                "summary": "Login by VK",
+                "operationId": "login-vk-access-token",
+                "parameters": [
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.doLoginByVkAccessTokenRequest"
                         }
                     }
                 ],
@@ -357,7 +401,7 @@ const docTemplate = `{
                 }
             }
         },
-        "v1.doLoginByVkRequest": {
+        "v1.doLoginByVkAccessTokenRequest": {
             "type": "object",
             "required": [
                 "vkAccessToken"
@@ -408,6 +452,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.doVkLoginByLaunchParamsRequest": {
+            "type": "object",
+            "required": [
+                "vkLaunchParams"
+            ],
+            "properties": {
+                "vkLaunchParams": {
                     "type": "string"
                 }
             }

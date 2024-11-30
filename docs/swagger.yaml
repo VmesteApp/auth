@@ -27,7 +27,7 @@ definitions:
     - email
     - password
     type: object
-  v1.doLoginByVkRequest:
+  v1.doLoginByVkAccessTokenRequest:
     properties:
       vkAccessToken:
         type: string
@@ -62,6 +62,13 @@ definitions:
     required:
     - email
     - password
+    type: object
+  v1.doVkLoginByLaunchParamsRequest:
+    properties:
+      vkLaunchParams:
+        type: string
+    required:
+    - vkLaunchParams
     type: object
 host: vmesteapp.ru
 info:
@@ -189,7 +196,36 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/v1.doLoginByVkRequest'
+          $ref: '#/definitions/v1.doVkLoginByLaunchParamsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.doLoginResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Login by VK
+      tags:
+      - login
+  /login/vk/access-token:
+    post:
+      consumes:
+      - application/json
+      description: Login by VK for users
+      operationId: login-vk-access-token
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.doLoginByVkAccessTokenRequest'
       produces:
       - application/json
       responses:
