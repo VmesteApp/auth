@@ -45,7 +45,7 @@ func Run(cfg *config.Config) {
 	// Usecases
 	userRepository := repo.NewUserRepository(pg)
 
-	userUseCase := usecase.New(userRepository, webapi.New(cfg.AppId, cfg.ServiceKey), cfg.JwtConfig.Secret, cfg.JwtConfig.TTL)
+	userUseCase := usecase.New(userRepository, webapi.New(cfg.AppId, cfg.ServiceKey), cfg.JwtConfig.Secret, cfg.JwtConfig.TTL, cfg.PrivateKey)
 	adminUseCase := usecase.NewAdminUseCase(userRepository)
 	profileUseCase := usecase.NewProfileUseCase(userRepository)
 

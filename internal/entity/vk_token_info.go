@@ -10,6 +10,7 @@ type VkTokenInfo struct {
 }
 
 var (
-	ErrVkTokenExpired = errors.New("vk access_token expired")
-	ErrBadVkToken     = errors.New("vk access_token is bad")
+	ErrVkTokenExpired    = errors.New("vk access_token expired")
+	ErrBadVkToken        = errors.New("vk access_token is bad")
+	ErrBadVkLaunchParams = errors.New("vk launch params is bad")
 )

@@ -11,7 +11,8 @@ type (
 	User interface {
 		CreateAccount(ctx context.Context, email, password string) error
 		Login(ctx context.Context, email, password string) (*entity.User, string, error)
-		VkLogin(ctx context.Context, userAccessToken string) (*entity.User, string, error)
+		VkLogin(ctx context.Context, vkLaunchParams string) (*entity.User, string, error)
+		VkLoginByAccessToken(ctx context.Context, userAccessToken string) (*entity.User, string, error)
 	}
 	UserRepo interface {
 		SaveUser(ctx context.Context, email string, hassPash []byte) error

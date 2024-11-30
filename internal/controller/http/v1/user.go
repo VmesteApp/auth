@@ -21,7 +21,8 @@ func newUserRoutes(handler *gin.RouterGroup, u usecase.User, l logger.Interface)
 
 	handler.POST("/register", r.doRegisterNewUser)
 	handler.POST("/login", r.doLoginByEmail)
-	handler.POST("/login/vk", r.doLoginByVk)
+	handler.POST("/login/vk", r.doVkLoginByLaunchParams)
+	handler.POST("/login/vk/access-token", r.doVkLoginByAccessToken)
 }
 
 type doRegisterNewUserRequest struct {
@@ -127,32 +128,32 @@ func (r *userRoutes) doLoginByEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-type doLoginByVkRequest struct {
+type doLoginByVkAccessTokenRequest struct {
 	VkAccessToken string `json:"vkAccessToken" binding:"required"`
 }
 
 // @Summary     Login by VK
 // @Description Login by VK for users
-// @ID          login-vk
+// @ID          login-vk-access-token
 // @Tags  	    login
-// @Param 			request body doLoginByVkRequest true "query params"
+// @Param 			request body doLoginByVkAccessTokenRequest true "query params"
 // @Accept      json
 // @Success     200  {object}  doLoginResponse
 // @Failure     400
 // @Failure     401
 // @Failure     500
 // @Produce     json
-// @Router      /login/vk [post]
-func (r *userRoutes) doLoginByVk(ctx *gin.Context) {
-	var request doLoginByVkRequest
+// @Router      /login/vk/access-token [post]
+func (r *userRoutes) doVkLoginByAccessToken(ctx *gin.Context) {
+	var request doLoginByVkAccessTokenRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		r.l.Error(err, "http - v1 - doLoginByVk")
+		r.l.Error(err, "http - v1 - doVkLoginByAccessToken")
 		errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 
 		return
 	}
 
-	user, token, err := r.u.VkLogin(ctx.Request.Context(), request.VkAccessToken)
+	user, token, err := r.u.VkLoginByAccessToken(ctx.Request.Context(), request.VkAccessToken)
 	if errors.Is(err, entity.ErrBadVkToken) {
 		errorResponse(ctx, http.StatusBadRequest, "wrong access_token")
 		return
@@ -162,7 +163,53 @@ func (r *userRoutes) doLoginByVk(ctx *gin.Context) {
 		return
 	}
 	if err != nil {
-		r.l.Error(err, "http - v1 - loginByVk")
+		r.l.Error(err, "http - v1 - doVkLoginByAccessToken")
+		errorResponse(ctx, http.StatusInternalServerError, "auth service problems")
+
+		return
+	}
+
+	res := doLoginResponse{
+		Token:  token,
+		UserID: user.ID,
+		Role:   user.Role,
+	}
+
+	ctx.JSON(http.StatusOK, res)
+}
+
+type doVkLoginByLaunchParamsRequest struct {
+	VkLaunchParams string `json:"vkLaunchParams" binding:"required"`
+}
+
+// @Summary     Login by VK
+// @Description Login by VK for users
+// @ID          login-vk
+// @Tags  	    login
+// @Param 			request body doVkLoginByLaunchParamsRequest true "query params"
+// @Accept      json
+// @Success     200  {object}  doLoginResponse
+// @Failure     400
+// @Failure     401
+// @Failure     500
+// @Produce     json
+// @Router      /login/vk [post]
+func (r *userRoutes) doVkLoginByLaunchParams(ctx *gin.Context) {
+	var request doVkLoginByLaunchParamsRequest
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		r.l.Error(err, "http - v1 - doVkLoginByLaunchParams")
+		errorResponse(ctx, http.StatusBadRequest, "invalid request body")
+
+		return
+	}
+
+	user, token, err := r.u.VkLogin(ctx.Request.Context(), request.VkLaunchParams)
+	if errors.Is(err, entity.ErrBadVkLaunchParams) {
+		errorResponse(ctx, http.StatusBadRequest, "wrong launch params")
+		return
+	}
+	if err != nil {
+		r.l.Error(err, "http - v1 - doVkLoginByAccessToken")
 		errorResponse(ctx, http.StatusInternalServerError, "auth service problems")
 
 		return
